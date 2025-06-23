@@ -11,14 +11,14 @@ export type SignaturePadRef = {
 	save: () => string | null;
 };
 
-type Props = {
+export type CanvasProps = {
 	width?: number;
 	height?: number;
-	onSave?: (dataUrl: string) => void;
+	className?: string;
 };
 
-const SignatureCanvas = forwardRef<SignaturePadRef, Props>(
-	({ width = 400, height = 200, onSave }, ref) => {
+const SignatureCanvas = forwardRef<SignaturePadRef, CanvasProps>(
+	({ width = 400, height = 200, className }, ref) => {
 		const canvasRef = useRef<HTMLCanvasElement>(null);
 		const padRef = useRef<SignaturePad | null>(null);
 
@@ -34,46 +34,19 @@ const SignatureCanvas = forwardRef<SignaturePadRef, Props>(
 				padRef.current?.clear();
 			},
 			save() {
-				if (padRef.current?.isEmpty()) return null;
-				return padRef.current.toDataURL();
+				if (padRef && padRef?.current?.isEmpty()) return null;
+				return padRef.current?.toDataURL() ?? null;
 			},
 		}));
 
-		const handleClear = () => {
-			padRef.current?.clear();
-		};
-
-		const handleSave = () => {
-			if (padRef.current?.isEmpty()) {
-				alert('Chưa có chữ ký!');
-				return;
-			}
-			const dataUrl = padRef.current.toDataURL();
-			onSave?.(dataUrl);
-		};
-
 		return (
-			<div className="w-full max-w-md rounded border p-4 shadow">
+			<div className="w-full max-w-md p-4">
 				<canvas
 					ref={canvasRef}
 					width={width}
 					height={height}
-					className="rounded border border-gray-400"
+					className={`border border-gray-400 ${className}`}
 				/>
-				<div className="mt-3 flex gap-2">
-					<button
-						onClick={handleClear}
-						className="rounded bg-gray-300 px-4 py-2 hover:bg-gray-400"
-					>
-						Xóa
-					</button>
-					<button
-						onClick={handleSave}
-						className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-					>
-						Lưu
-					</button>
-				</div>
 			</div>
 		);
 	},

@@ -1,72 +1,81 @@
-// components/SignatureDrawer.tsx
 import {
-	Drawer,
-	DrawerContent,
-	DrawerHeader,
-	DrawerTitle,
-	DrawerTrigger,
-	DrawerFooter,
-	DrawerClose,
-} from '@repo/ui/drawer';
-import { Button } from '@repo/ui/button';
-import { useRef, useEffect } from 'react';
+	FormEditor,
+	InlineToolBarDefault,
+	type EditorHandle,
+} from '@/components/editor';
+import { useRef } from 'react';
+import { DATA } from '@/constant';
 import SignaturePad from 'signature_pad';
+import SignatureCanvas from '@/components/signature-canvas';
+import {
+	Dialog,
+	DialogContent,
+	DialogFooter,
+	DialogTrigger,
+} from '@repo/ui/dialog';
+import { Button } from '@repo/ui/button';
 
-interface Props {
-	onSave?: (dataUrl: string) => void;
-}
-
-export default function SignatureDrawer({ onSave }: Props) {
-	const canvasRef = useRef<HTMLCanvasElement>(null);
+export default function EditorPage() {
 	const signaturePadRef = useRef<SignaturePad | null>(null);
+	const editorRef = useRef<EditorHandle>(null);
 
-	useEffect(() => {
-		if (canvasRef.current) {
-			signaturePadRef.current = new SignaturePad(canvasRef.current);
-		}
-	}, []);
-
-	const handleSave = () => {
-		if (!signaturePadRef.current?.isEmpty()) {
-			const dataUrl = signaturePadRef.current.toDataURL();
-			onSave?.(dataUrl);
-		} else {
-			alert('Bạn chưa ký tên!');
+	const handleSaveFromOutside = () => {
+		const base64 = signaturePadRef.current?.save();
+		if (base64) {
+			console.log('Chữ ký từ ngoài:', base64);
 		}
 	};
 
+	const handleClearFromOutside = () => {
+		signaturePadRef.current?.clear();
+	};
+
 	return (
-		<Drawer>
-			<DrawerTrigger asChild>
-				<Button variant="outline">Ký tên</Button>
-			</DrawerTrigger>
-			<DrawerContent className="p-4">
-				<DrawerHeader>
-					<DrawerTitle>Ký tên điện tử</DrawerTitle>
-				</DrawerHeader>
-				<div className="flex flex-col items-center gap-4">
-					<canvas
-						ref={canvasRef}
-						width={400}
-						height={200}
-						className="rounded border border-gray-400"
-					/>
-					<div className="flex gap-2">
-						<Button
-							variant="secondary"
-							onClick={() => signaturePadRef.current?.clear()}
-						>
-							Xóa
-						</Button>
-						<Button onClick={handleSave}>Lưu</Button>
-					</div>
-				</div>
-				<DrawerFooter>
-					<DrawerClose asChild>
-						<Button variant="ghost">Đóng</Button>
-					</DrawerClose>
-				</DrawerFooter>
-			</DrawerContent>
-		</Drawer>
+		<div className="container mx-auto p-5">
+			<div className="pt-[60px] pb-[60px]">
+				<FormEditor
+					className="w-full"
+					tunes={['alignText']}
+					toolBar={[...InlineToolBarDefault, 'variable', 'layout']}
+					ref={editorRef}
+					initialData={DATA}
+					onChange={(data) => {
+						console.log('change data', data);
+					}}
+				/>
+
+				{/* <button
+					className="mt-4 rounded bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700"
+					onClick={async () => {
+						const data = await editorRef.current?.save();
+						console.log('Đã lưu:', data);
+					}}
+				>
+					Save
+				</button> */}
+
+				<Dialog>
+					<form>
+						<DialogTrigger asChild>
+							<Button variant="outline">Signature</Button>
+						</DialogTrigger>
+						<DialogContent>
+							<SignatureCanvas
+								ref={signaturePadRef}
+								height={500}
+								width={400}
+								onSave={(data) => console.log('data', data)}
+							/>
+							<DialogFooter>
+								<Button onClick={handleClearFromOutside} variant="outline">
+									Clear
+								</Button>
+								<Button onClick={handleSaveFromOutside}>Save</Button>
+							</DialogFooter>
+						</DialogContent>
+					</form>
+				</Dialog>
+			</div>
+		</div>
 	);
 }

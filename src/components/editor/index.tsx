@@ -22,6 +22,7 @@ import ImageTool from '@editorjs/image';
 import AlignText from './tools/AlignText';
 import Underline from './tools/Underline';
 import Variable from './tools/Variable';
+import LayoutBlock from './tools/Layout';
 
 // Shared types
 export interface EditorHandle {
@@ -35,7 +36,8 @@ export type InlineToolBarOption =
 	| 'italic'
 	| 'link'
 	| 'underline'
-	| 'variable';
+	| 'variable'
+	| 'layout';
 
 export const TuneDefault = ['alignText'];
 
@@ -56,16 +58,17 @@ export const toolsConfig = {
 	table: { class: Table as any, inlineToolbar: true },
 	underline: { class: Underline, inlineToolbar: true },
 	variable: { class: Variable, inlineToolbar: true },
+	layout: { class: LayoutBlock },
 };
 
-export interface FormEditorProps {
+export type FormEditorProps = {
 	initialData?: OutputData;
 	placeholder?: string;
 	className?: string;
 	tunes?: TuneOption[];
 	toolBar?: string[] | InlineToolBarOption[] | boolean;
 	onChange?: (data: OutputData) => void;
-}
+};
 
 export const FormEditor = forwardRef<EditorHandle, FormEditorProps>(
 	(
