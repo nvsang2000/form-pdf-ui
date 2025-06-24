@@ -114,3 +114,55 @@
 #popup-cancel:hover {
   background-color: #d5d5d5;
 }
+
+/* chung cho tất cả button của SignatureTool */
+.signature-btn {
+  border-radius: 4px;
+  padding: 6px 12px;
+  margin: 4px 4px 0 0;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #f5f5f5;
+  color: rgba(0, 0, 0, 0.85);
+
+}
+
+/* primary (Save) */
+.signature-btn.btn-save, .signature-btn.btn-edit {
+  background: #155dfc;
+  border-color: #155dfc;
+  color: #f5f5f5;
+}
+
+/* success (Add) */
+.signature-btn.btn-add {
+  background: #f5f5f5;
+  border-color: #f5f5f5;
+  color: black;
+}
+
+
+/* danger (Clear) */
+.signature-btn.btn-clear {
+  background: #e7000b;
+  border-color: #e7000b;
+  color: #fff;
+}
+
+
+/* default (Cancel) */
+.signature-btn.btn-cancel {
+  background: #8b8b8b;
+  border-color: #8b8b8b;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+/* Canvas bình thường */
+.signature-canvas {
+  border: 1px solid #d9d9d9;
+}
+
+.signature-wrapper.editing .signature-canvas {
+  border: 2px dashed #1890ff;
+}

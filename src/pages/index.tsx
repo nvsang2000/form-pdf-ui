@@ -1,10 +1,11 @@
 import {
 	FormEditor,
 	InlineToolBarDefault,
+	ReadOnlyEditor,
 	type EditorHandle,
 } from '@/components/editor';
 import { useRef } from 'react';
-import { DATA } from '@/constant';
+import { DATA, sampleData } from '@/constant';
 import SignaturePad from 'signature_pad';
 import SignatureCanvas from '@/components/signature-canvas';
 import {
@@ -36,7 +37,7 @@ export default function EditorPage() {
 				<FormEditor
 					className="w-full"
 					tunes={['alignText']}
-					toolBar={[...InlineToolBarDefault, 'variable', 'layout']}
+					toolBar={[...InlineToolBarDefault, 'variable']}
 					ref={editorRef}
 					initialData={DATA}
 					onChange={(data) => {
@@ -44,7 +45,7 @@ export default function EditorPage() {
 					}}
 				/>
 
-				{/* <button
+				<button
 					className="mt-4 rounded bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700"
 					onClick={async () => {
 						const data = await editorRef.current?.save();
@@ -52,7 +53,7 @@ export default function EditorPage() {
 					}}
 				>
 					Save
-				</button> */}
+				</button>
 
 				<Dialog>
 					<form>
