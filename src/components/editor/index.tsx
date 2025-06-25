@@ -23,6 +23,7 @@ import AlignText from './tools/AlignText';
 import Underline from './tools/Underline';
 import Variable from './tools/Variable';
 import Signature from './tools/Signature';
+import Layout from './tools/Layout';
 
 // Shared types
 export interface EditorHandle {
@@ -37,7 +38,8 @@ export type InlineToolBarOption =
 	| 'link'
 	| 'underline'
 	| 'variable'
-	| 'signature';
+	| 'signature'
+	| 'layout';
 
 export const TuneDefault = ['alignText'];
 
@@ -50,15 +52,15 @@ export const toolsConfig = {
 	inlineCode: InlineCode,
 	code: CodeTool,
 	warning: Warning,
-	image: {
-		class: ImageTool,
-		config: {
-			endpoints: {
-				byFile: 'http://localhost:8008/uploadFile',
-				byUrl: 'http://localhost:8008/fetchUrl',
-			},
-		},
-	},
+	// image: {
+	// 	class: ImageTool,
+	// 	config: {
+	// 		endpoints: {
+	// 			byFile: 'http://localhost:8008/uploadFile',
+	// 			byUrl: 'http://localhost:8008/fetchUrl',
+	// 		},
+	// 	},
+	// },
 	alignText: AlignText as any,
 	header: { class: Header as any, inlineToolbar: true },
 	paragraph: { class: Paragraph as any, inlineToolbar: true },
@@ -66,11 +68,8 @@ export const toolsConfig = {
 	table: { class: Table as any, inlineToolbar: true },
 	underline: { class: Underline, inlineToolbar: true },
 	variable: { class: Variable, inlineToolbar: true },
-	signature: {
-		class: Signature,
-	},
-	//layout: LayoutBlock,
-	//button: BasicButton,
+	signature: { class: Signature },
+	layout: Layout,
 };
 
 export type FormEditorProps = {

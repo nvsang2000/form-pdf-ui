@@ -2,70 +2,68 @@ import EditorJS, {
 	type BlockTool,
 	type API,
 	type BlockToolConstructorOptions,
-	type OutputData,
 	type SanitizerConfig,
 } from '@editorjs/editorjs';
 
 import Paragraph from '@editorjs/paragraph';
+import Header from '@editorjs/header';
 
-/**
- * Định nghĩa các tool con cho nested editor.
- * Lưu ý: phải import ListTool & UnderlineTool từ @editorjs, không phải lucide.
- */
+// custom tools
+import Underline from './Underline';
+import Variable from './Variable';
+import Signature from './Signature';
+
+/** Interface cho dữ liệu Column */
+interface ColumnData {
+	blocks: unknown[];
+}
+
+/** Các tool dùng cho nested editor */
 const nestedTools = {
+	header: { class: Header as any, inlineToolbar: true },
 	paragraph: { class: Paragraph as any, inlineToolbar: true },
+	underline: { class: Underline, inlineToolbar: true },
+	variable: { class: Variable, inlineToolbar: true },
+	signature: { class: Signature },
 } as const;
 
-export default class LayoutBlock implements BlockTool {
-	/** Hiển thị trong toolbox */
+export default class Layout implements BlockTool {
 	static get toolbox() {
 		return {
 			title: 'Layout',
-			icon: `<svg width="18" height="18" viewBox="0 0 24 24">
-               <path d="M4 4h7v16H4zM13 4h7v16h-7z"/>
-             </svg>`,
+			icon: `<svg width="18" height="18" viewBox="0 0 24 24"><path d="M4 4h7v16H4zM13 4h7v16h-7z"/></svg>`,
 		};
 	}
 
-	/** Cho phép xem block này ở chế độ readOnly */
 	static get isReadOnlySupported(): boolean {
 		return true;
 	}
 
-	/** Shortcut để chèn block */
 	static get shortcut(): string {
 		return 'CMD+L';
 	}
 
-	/**
-	 * Cấu hình sanitizer: chỉ chấp nhận mảng `columns`, mỗi phần tử
-	 * là object có đúng trường `blocks` (mảng).
-	 */
 	static get sanitize(): SanitizerConfig {
 		return {
 			columns: {
 				type: 'array',
-				items: {
-					type: 'object',
-					properties: {
-						blocks: { type: 'array' },
-					},
-				},
+				items: { type: 'object', properties: { blocks: { type: 'array' } } },
 			},
 		};
 	}
 
 	private api: API;
-	private data: { columns: { blocks: unknown[] }[] };
+	private data: { columns: ColumnData[] };
 	private container: HTMLDivElement;
 
-	constructor({ api, data }: BlockToolConstructorOptions) {
+	constructor({
+		api,
+		data,
+	}: BlockToolConstructorOptions<{ columns: ColumnData[] }>) {
 		this.api = api;
-
-		// Bình thường hóa input data: chỉ giữ lại trường blocks
 		this.data = {
 			columns: Array.isArray(data?.columns)
-				? data.columns.map((c) => ({ blocks: c.blocks }))
+				? data.columns.map((c) => ({ blocks: c.blocks || [] }))
 				: [{ blocks: [] }, { blocks: [] }],
 		};
 
@@ -73,47 +71,71 @@ export default class LayoutBlock implements BlockTool {
 		this.container.classList.add('layout-grid');
 	}
 
-	/** Vẽ grid các cột */
 	render(): HTMLElement {
 		this.container.innerHTML = '';
 
 		this.data.columns.forEach((col, idx) => {
 			const colEl = document.createElement('div');
-			colEl.classList.add('layout-col');
-			colEl.innerHTML = this.renderPreview(col.blocks);
-			colEl.addEventListener('click', () => this.openNestedEditor(idx, colEl));
+			colEl.className = 'layout-col';
+			colEl.style.position = 'relative';
+
+			if (col.blocks.length === 0) {
+				const btn = document.createElement('button');
+				btn.type = 'button';
+				btn.textContent = 'Add Content';
+				btn.classList.add('col-content-btn');
+				btn.addEventListener('click', () => this.openNestedEditor(idx));
+				colEl.appendChild(btn);
+			} else {
+				const holder = document.createElement('div');
+				holder.className = 'col-preview-holder';
+				colEl.appendChild(holder);
+
+				new EditorJS({
+					holder,
+					readOnly: true,
+					minHeight: 0,
+					tools: nestedTools,
+					data: { blocks: col.blocks, version: EditorJS.version },
+				});
+
+				const editOverlay = document.createElement('button');
+				editOverlay.type = 'button';
+				editOverlay.className = 'col-edit-overlay';
+				editOverlay.innerHTML = '✏️';
+				editOverlay.addEventListener('click', () => this.openNestedEditor(idx));
+				colEl.appendChild(editOverlay);
+			}
+
 			this.container.appendChild(colEl);
 		});
 
 		return this.container;
 	}
 
-	/** Tạo preview đơn giản cho nội dung cột */
-	private renderPreview(blocks: unknown[]): string {
-		return (blocks as any[])
-			.map((b) => {
-				switch (b.type) {
-					case 'header':
-					case 'paragraph':
-						return b.data.text;
-					case 'list':
-						return (b.data.items as string[]).join(', ');
-					case 'image':
-						return `<img src="${b.data.file.url}" style="max-height:40px" />`;
-					default:
-						return `[${b.type}]`;
-				}
-			})
-			.join('<br>');
+	/**
+	 * Thêm cột mới tại vị trí xác định
+	 */
+	private addColumn(position: number): void {
+		this.data.columns.splice(position, 0, { blocks: [] });
+		this.render();
 	}
 
 	/**
-	 * Mở nested EditorJS để edit cột thứ `columnIndex`
-	 * - holder: dùng chính element `.popup-editor-holder` (HTMLElement)
-	 * - tools: nestedTools đã validate
+	 * Xóa cột tại index (ít nhất 1 cột giữ lại)
 	 */
-	private openNestedEditor(columnIndex: number, hostEl: HTMLElement): void {
-		// Tạo overlay + popup
+	private deleteColumn(index: number): void {
+		if (this.data.columns.length <= 1) {
+			return;
+		}
+		this.data.columns.splice(index, 1);
+		this.render();
+	}
+
+	/**
+	 * Mở editor popup cho cột
+	 */
+	private openNestedEditor(columnIndex: number): void {
 		const overlay = document.createElement('div');
 		overlay.classList.add('editor-popup-overlay');
 		overlay.innerHTML = `
@@ -127,47 +149,43 @@ export default class LayoutBlock implements BlockTool {
     `;
 		document.body.appendChild(overlay);
 
-		// Lấy holder element trực tiếp (HTMLElement) thay vì id
 		const holder = overlay.querySelector<HTMLDivElement>('.popup-editor-holder')!;
-
 		const nested = new EditorJS({
 			holder,
-			data: { blocks: this.data.columns[columnIndex].blocks },
 			tools: nestedTools,
 			autofocus: true,
-			onReady: () => {
-				// Cancel: huỷ popup
-				overlay
-					.querySelector<HTMLButtonElement>('.popup-cancel')!
-					.addEventListener('click', () => {
-						nested.destroy();
-						overlay.remove();
-					});
-
-				// Save: lấy blocks mới, cập nhật data và preview, destroy + remove
-				overlay
-					.querySelector<HTMLButtonElement>('.popup-save')!
-					.addEventListener('click', async () => {
-						const { blocks } = await nested.save(); // nested.save() trả về { time, blocks, version }
-						this.data.columns[columnIndex] = { blocks }; // chỉ giữ lại blocks
-						hostEl.innerHTML = this.renderPreview(blocks);
-						nested.destroy();
-						overlay.remove();
-					});
+			data: {
+				blocks: this.data.columns[columnIndex].blocks,
+				version: EditorJS.version,
 			},
+		});
+
+		overlay.querySelector('.popup-cancel')!.addEventListener('click', () => {
+			nested.destroy();
+			overlay.remove();
+		});
+
+		overlay.querySelector('.popup-save')!.addEventListener('click', async () => {
+			const output = await nested.save();
+			nested.destroy();
+			overlay.remove();
+			this.data.columns[columnIndex].blocks = output.blocks;
+			this.render();
 		});
 	}
 
 	/**
-	 * EditorJS cha gọi để lấy data của LayoutBlock
+	 * Lưu data của block (gọi bởi EditorJS)
 	 */
-	save(): Promise<{ columns: { blocks: unknown[] }[] }> {
-		// Trả về đúng shape đã sanitize
-		return Promise.resolve({ columns: this.data.columns });
+	public save(blockContent: HTMLElement): { columns: ColumnData[] } {
+		// trả về cấu trúc data để EditorJS ghi vào JSON
+		return { columns: this.data.columns };
 	}
 
-	/** Validate trước khi save */
-	validate(savedData: any): boolean {
+	/**
+	 * Validate data trước khi lưu
+	 */
+	public validate(savedData: any): boolean {
 		return (
 			Array.isArray(savedData?.columns) &&
 			savedData.columns.every((c: any) => Array.isArray(c.blocks))
