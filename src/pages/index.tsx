@@ -1,11 +1,10 @@
 import {
 	FormEditor,
 	InlineToolBarDefault,
-	ReadOnlyEditor,
 	type EditorHandle,
 } from '@/components/editor';
 import { useRef } from 'react';
-import { DATA, sampleData } from '@/constant';
+import { DATA } from '@/constant';
 import SignaturePad from 'signature_pad';
 import SignatureCanvas from '@/components/signature-canvas';
 import {
@@ -15,6 +14,7 @@ import {
 	DialogTrigger,
 } from '@repo/ui/dialog';
 import { Button } from '@repo/ui/button';
+import axios from 'axios';
 
 export default function EditorPage() {
 	const signaturePadRef = useRef<SignaturePad | null>(null);
@@ -31,6 +31,37 @@ export default function EditorPage() {
 		signaturePadRef.current?.clear();
 	};
 
+	async function fetchDataPdf(data) {
+		try {
+			const payload = {
+				width: 600,
+				height: 900,
+				margin: 10,
+				content: JSON.stringify(data),
+			};
+
+			// Sử dụng import.meta.env nếu bạn đang chạy với Vite
+			//const endpoint = process.env.VITE_SERVICE_ENDPOINT as string;
+
+			// Gọi API bằng POST
+			const res = await axios.post(
+				`http://localhost:35000/editor/convert/jsontopdf`,
+				payload,
+				{
+					headers: { 'Content-Type': 'application/json' },
+				},
+			);
+
+			console.log('res.data', res.data);
+
+			// Trả về dữ liệu
+		} catch (err: any) {
+			// Bỏ qua khi request bị huỷ (nếu dùng axios cancel token)
+			console.log('err', err);
+			if (axios.isCancel(err)) return;
+		}
+	}
+
 	return (
 		<div className="container mx-auto p-5">
 			<div className="pt-[60px] pb-[60px]">
@@ -40,9 +71,7 @@ export default function EditorPage() {
 					toolBar={[...InlineToolBarDefault, 'variable']}
 					ref={editorRef}
 					initialData={DATA}
-					onChange={(data) => {
-						console.log('change data', data);
-					}}
+					onChange={(data) => {}}
 				/>
 
 				<div className="mt-[40px] flex">
@@ -50,7 +79,8 @@ export default function EditorPage() {
 						className="mr-[10px]"
 						onClick={async () => {
 							const data = await editorRef.current?.save();
-							console.log('Đã lưu:', data);
+							console.log('change data', data);
+							await fetchDataPdf(data);
 						}}
 					>
 						Save

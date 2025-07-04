@@ -17,7 +17,6 @@ import Delimiter from '@editorjs/delimiter';
 import InlineCode from '@editorjs/inline-code';
 import CodeTool from '@editorjs/code';
 import Warning from '@editorjs/warning';
-import ImageTool from '@editorjs/image';
 
 // custom tools
 import AlignText from './tools/AlignText';

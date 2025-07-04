@@ -31,6 +31,7 @@
 		"@editorjs/quote": "^2.7.6",
 		"@editorjs/table": "^2.4.4",
 		"@editorjs/warning": "^1.4.1",
+		"axios": "^1.10.0",
 		"i": "^0.3.7",
 		"npm": "^11.4.1",
 		"react": "^19.1.0",
