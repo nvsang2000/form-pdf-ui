@@ -13,6 +13,7 @@ import Header from '@editorjs/header';
 import Underline from '../Underline';
 import Variable from '../Variable';
 import Signature from '../Signature';
+import { InlineToolBarDefault } from '../..';
 
 /** Interface cho dữ liệu Column */
 interface ColumnData {
@@ -25,7 +26,7 @@ const nestedTools = {
 	paragraph: { class: Paragraph as any, inlineToolbar: true },
 	underline: { class: Underline, inlineToolbar: true },
 	variable: { class: Variable, inlineToolbar: true },
-	signature: { class: Signature },
+	signature: { class: Signature, inlineToolBar: false },
 } as const;
 
 export default class Layout implements BlockTool {
@@ -98,7 +99,7 @@ export default class Layout implements BlockTool {
 
 				new EditorJS({
 					holder,
-					readOnly: true,
+					readOnly: false,
 					minHeight: 0,
 					tools: nestedTools,
 					data: {

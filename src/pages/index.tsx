@@ -21,7 +21,7 @@ export default function EditorPage() {
 	const editorRef = useRef<EditorHandle>(null);
 
 	const handleSaveFromOutside = () => {
-		const base64 = signaturePadRef.current?.save();
+		const base64 = signaturePadRef.current?.toDataURL();
 		if (base64) {
 			console.log('Chữ ký từ ngoài:', base64);
 		}
@@ -79,7 +79,6 @@ export default function EditorPage() {
 						className="mr-[10px]"
 						onClick={async () => {
 							const data = await editorRef.current?.save();
-							console.log('change data', data);
 							await fetchDataPdf(data);
 						}}
 					>

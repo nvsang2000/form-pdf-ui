@@ -31,6 +31,8 @@
 		"@editorjs/quote": "^2.7.6",
 		"@editorjs/table": "^2.4.4",
 		"@editorjs/warning": "^1.4.1",
+		"@react-pdf-viewer/core": "^3.12.0",
+		"@react-pdf-viewer/default-layout": "^3.12.0",
 		"axios": "^1.10.0",
 		"i": "^0.3.7",
 		"npm": "^11.4.1",

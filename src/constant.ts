@@ -466,12 +466,7 @@ export const DATA = {
 							{
 								id: 'VSEdNnjlDx',
 								type: 'signature',
-								data: {
-									caption: '',
-									withBorder: false,
-									stretched: false,
-									withBackground: false,
-								},
+								data: {},
 							},
 						],
 					},
@@ -495,12 +490,7 @@ export const DATA = {
 							{
 								id: '8YCEvdwd63',
 								type: 'signature',
-								data: {
-									caption: '',
-									withBorder: false,
-									stretched: false,
-									withBackground: false,
-								},
+								data: {},
 							},
 						],
 					},
