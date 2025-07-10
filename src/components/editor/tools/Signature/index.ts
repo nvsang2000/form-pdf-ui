@@ -1,5 +1,9 @@
 import './index.css';
-import type { BlockTool, SanitizerConfig } from '@editorjs/editorjs';
+import type {
+	BlockTool,
+	BlockToolConstructorOptions,
+	SanitizerConfig,
+} from '@editorjs/editorjs';
 import SignaturePad from 'signature_pad';
 
 export interface SignatureImageData {
@@ -35,155 +39,142 @@ export default class SignatureAsImage implements BlockTool {
 		};
 	}
 
-	private data: { url?: string };
+	private data: SignatureImageData;
 	private wrapper!: HTMLElement;
-	private api: any;
+	private modalOverlay?: HTMLDivElement;
 	private pad?: SignaturePad;
 
-	constructor({ data, api }: { data: { url?: string }; api: any }) {
-		this.api = api;
-		this.data = data || {};
+	constructor({
+		data,
+	}: BlockToolConstructorOptions<Partial<SignatureImageData>>) {
+		this.data = {
+			url: data?.url,
+			caption: data?.caption || '',
+			withBorder: !!data?.withBorder,
+			stretched: !!data?.stretched,
+			withBackground: !!data?.withBackground,
+		};
 	}
-
-	// render(): HTMLElement {
-	// 	this.wrapper = document.createElement('div');
-
-	// 	const button = document.createElement('button');
-	// 	button.innerText = this.data.url ? 'Chỉnh sửa chữ ký' : 'Thêm chữ ký';
-	// 	button.onclick = () => this.openModal();
-
-	// 	this.wrapper.appendChild(button);
-
-	// 	if (this.api?.readOnly?.isEnabled && this.data?.url) {
-	// 		const img = document.createElement('img');
-	// 		img.src = this.data.url;
-	// 		img.style.maxWidth = '100%';
-	// 		img.style.border = '1px solid #ccc';
-	// 		this.wrapper.appendChild(img);
-	// 		return this.wrapper;
-	// 	}
-
-	// 	// Gắn lại ảnh chữ ký nếu có
-	// 	if (this.data?.url) {
-	// 		const img = document.createElement('img');
-	// 		img.src = this.data.url;
-	// 		img.style.maxWidth = '200px';
-	// 		img.style.marginTop = '10px';
-	// 		this.wrapper.appendChild(img);
-	// 	}
-	// 	console.log('🔍 signature readOnly?', this.api.readOnly?.isEnabled);
-	// 	console.log('📦 signature data:', this.data);
-
-	// 	return this.wrapper;
-	// }
-
-	// private redraw() {
-	// 	this.wrapper.innerHTML = '';
-	// 	if (this.data.url) {
-	// 		// Nếu đã có chữ ký, hiển thị ảnh + nút Edit
-	// 		const img = document.createElement('img');
-	// 		img.src = this.data.url;
-	// 		img.classList.add('signature-image');
-	// 		this.wrapper.appendChild(img);
-
-	// 		this.wrapper.dataset.signatureUrl = this.data.url || '';
-	// 		this.wrapper.appendChild(
-	// 			this.createButton('Edit Signature', 'btn-edit', () => this.openModal()),
-	// 		);
-	// 	} else {
-	// 		// Chưa có chữ ký, hiển thị nút Add
-	// 		this.wrapper.appendChild(
-	// 			this.createButton('Add Signature', 'btn-add', () => this.openModal()),
-	// 		);
-	// 	}
-	// }
 
 	render(): HTMLElement {
 		this.wrapper = document.createElement('div');
-		this.wrapper.className = 'signature-block';
-
-		console.log('✅ render url =', this.data.url?.slice(0, 40));
-
-		// Nếu có ảnh
-		if (this.data?.url) {
-			const img = document.createElement('img');
-			img.src = this.data.url;
-			img.style.maxWidth = '100%';
-			img.onload = () => console.log('✅ Image loaded OK');
-			img.onerror = (e) => console.error('❌ Image load failed', e);
-			this.wrapper.appendChild(img);
-		}
-
-		const button = document.createElement('button');
-		button.innerText = this.data?.url ? 'Cập nhật chữ ký' : 'Thêm chữ ký';
-		button.onclick = () => this.openModal();
-		this.wrapper.appendChild(button);
-
+		this.wrapper.classList.add('signature-image-block');
+		this.redraw();
 		return this.wrapper;
 	}
 
+	private redraw() {
+		this.wrapper.innerHTML = '';
+		if (this.data.url) {
+			// Nếu đã có chữ ký, hiển thị ảnh + nút Edit
+			const img = document.createElement('img');
+			img.src = this.data.url;
+			img.classList.add('signature-image');
+			this.wrapper.appendChild(img);
+
+			this.wrapper.appendChild(
+				this.createButton('Edit Signature', 'btn-edit', () => this.openModal()),
+			);
+		} else {
+			// Chưa có chữ ký, hiển thị nút Add
+			this.wrapper.appendChild(
+				this.createButton('Add Signature', 'btn-add', () => this.openModal()),
+			);
+		}
+	}
+
 	private openModal() {
-		const overlay = document.createElement('div');
-		overlay.className = 'signature-modal';
-		overlay.style.cssText = `
-			position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-			background: rgba(0,0,0,0.5); display: flex;
-			justify-content: center; align-items: center; z-index: 9999;
-		`;
+		// 1. Tạo overlay
+		this.modalOverlay = document.createElement('div');
+		this.modalOverlay.classList.add('signature-modal-overlay');
+		this.modalOverlay.innerHTML = `
+  <div class="signature-modal">
+    <canvas class="signature-modal-canvas"></canvas>
+    <div class="signature-modal-controls">
+      <button class="signature-btn btn-save">Save</button>
+      <button class="signature-btn btn-clear">Clear</button>
+      <button class="signature-btn btn-cancel">Cancel</button>
+    </div>
+  </div>
+`;
 
-		const modal = document.createElement('div');
-		modal.style.cssText = `
-			background: white; padding: 20px; border-radius: 8px;
-			box-shadow: 0 0 10px rgba(0,0,0,0.2);
-		`;
+		document.body.appendChild(this.modalOverlay);
 
-		const canvas = document.createElement('canvas');
-		canvas.width = 500;
-		canvas.height = 200;
-		canvas.style.border = '1px solid #ccc';
-		modal.appendChild(canvas);
-
+		// 2. Khởi tạo SignaturePad
+		const canvas = this.modalOverlay.querySelector<HTMLCanvasElement>(
+			'.signature-modal-canvas',
+		)!;
+		canvas.width = 600;
+		canvas.height = 400;
 		this.pad = new SignaturePad(canvas);
-		if (this.data?.url) {
+
+		// Nếu đã có ảnh cũ, load lên
+		if (this.data.url) {
 			this.pad.fromDataURL(this.data.url);
 		}
 
-		const btnSave = document.createElement('button');
-		btnSave.innerText = 'Lưu';
-		btnSave.onclick = () => {
-			if (this.pad && !this.pad.isEmpty()) {
-				this.data.url = this.pad.toDataURL();
-			}
-			document.body.removeChild(overlay);
-			// 🔁 cập nhật lại UI
-			const newWrapper = this.render();
-			this.wrapper.replaceWith(newWrapper);
-			this.wrapper = newWrapper;
+		// 3. Gắn sự kiện cho các nút
+		this.modalOverlay
+			.querySelector('.btn-save')!
+			.addEventListener('click', () => this.onSave());
+		this.modalOverlay
+			.querySelector('.btn-clear')!
+			.addEventListener('click', () => this.pad?.clear());
+		this.modalOverlay
+			.querySelector('.btn-cancel')!
+			.addEventListener('click', () => this.onCancel());
+	}
+
+	private onSave() {
+		if (this.pad && !this.pad.isEmpty()) {
+			this.data.url = this.pad.toDataURL();
+		} else {
+			this.data.url = undefined;
+		}
+		this.closeModal();
+		this.redraw();
+	}
+
+	private onCancel() {
+		this.closeModal();
+		this.redraw();
+	}
+
+	private closeModal() {
+		if (this.pad) {
+			this.pad.off(); // gỡ listener nội bộ
+			this.pad = undefined;
+		}
+		if (this.modalOverlay) {
+			this.modalOverlay.remove();
+			this.modalOverlay = undefined;
+		}
+	}
+
+	private createButton(
+		text: string,
+		className: string,
+		onClick: () => void,
+	): HTMLButtonElement {
+		const btn = document.createElement('button');
+		btn.type = 'button';
+		btn.textContent = text;
+		btn.classList.add('signature-btn', className);
+		btn.addEventListener('click', onClick);
+		return btn;
+	}
+
+	save(): SignatureImageData {
+		return {
+			url: this.data.url,
+			caption: this.data.caption,
+			withBorder: this.data.withBorder,
+			stretched: this.data.stretched,
+			withBackground: this.data.withBackground,
 		};
-
-		const btnClear = document.createElement('button');
-		btnClear.innerText = 'Xóa';
-		btnClear.onclick = () => this.pad?.clear();
-
-		const btnCancel = document.createElement('button');
-		btnCancel.innerText = 'Hủy';
-		btnCancel.onclick = () => document.body.removeChild(overlay);
-
-		const controls = document.createElement('div');
-		controls.style.marginTop = '10px';
-		controls.append(btnSave, btnClear, btnCancel);
-		modal.appendChild(controls);
-
-		overlay.appendChild(modal);
-		document.body.appendChild(overlay);
 	}
 
-	save(): { url?: string } {
-		console.log('📦 save() called, returning url:', this.data.url?.slice(0, 40));
-		return this.data?.url ? { url: this.data.url } : {};
-	}
-
-	validate(data: { url?: string }): boolean {
-		return !data.url || typeof data.url === 'string';
+	validate(data: SignatureImageData): boolean {
+		return data.url === undefined || typeof data.url === 'string';
 	}
 }

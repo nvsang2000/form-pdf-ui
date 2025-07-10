@@ -13,8 +13,7 @@ import Header from '@editorjs/header';
 import Underline from '../Underline';
 import Variable from '../Variable';
 import Signature from '../Signature';
-import { InlineToolBarDefault } from '../..';
-
+import debounce from 'lodash/debounce';
 /** Interface cho dữ liệu Column */
 interface ColumnData {
 	blocks: OutputBlockData<string, any>[];
@@ -26,7 +25,7 @@ const nestedTools = {
 	paragraph: { class: Paragraph as any, inlineToolbar: true },
 	underline: { class: Underline, inlineToolbar: true },
 	variable: { class: Variable, inlineToolbar: true },
-	signature: { class: Signature, inlineToolBar: false },
+	signature: { class: Signature },
 } as const;
 
 export default class Layout implements BlockTool {
@@ -94,18 +93,41 @@ export default class Layout implements BlockTool {
 				colEl.appendChild(btn);
 			} else {
 				const holder = document.createElement('div');
-				holder.className = 'col-preview-holder';
+				// thêm lớp duy nhất theo idx để scope CSS
+				const scopeClass = `col-preview-scope-${idx}`;
+				holder.className = `col-preview-holder ${scopeClass}`;
 				colEl.appendChild(holder);
 
-				new EditorJS({
+				const previewEditor = new EditorJS({
 					holder,
-					readOnly: false,
+					readOnly: false, // vẫn cần false để signature tool hoạt động
 					minHeight: 0,
 					tools: nestedTools,
 					data: {
 						blocks: col.blocks,
 						version: EditorJS.version,
 					},
+
+					onReady: () => {
+						// Style chỉ ảnh hưởng tới holder có đúng scopeClass
+						const style = document.createElement('style');
+						style.textContent = `
+							/* Ẩn toolbar/popover chỉ trong scope này */
+							.${scopeClass} .ce-toolbar,
+							.${scopeClass} .ce-popover,
+							.${scopeClass} .ce-settings,
+							.${scopeClass} .ce-inline-toolbox {
+							display: none !important;
+							}
+						`;
+						// Có thể append vào head hoặc chính trong holder
+						document.head.appendChild(style);
+					},
+
+					onChange: debounce(async () => {
+						const output = await previewEditor.save();
+						this.data.columns[idx].blocks = output.blocks;
+					}, 500),
 				});
 
 				const editOverlay = document.createElement('button');
@@ -122,19 +144,6 @@ export default class Layout implements BlockTool {
 		return this.container;
 	}
 
-	private addColumn(position: number): void {
-		this.data.columns.splice(position, 0, { blocks: [] });
-		this.render();
-	}
-
-	private deleteColumn(index: number): void {
-		if (this.data.columns.length <= 1) {
-			return;
-		}
-		this.data.columns.splice(index, 1);
-		this.render();
-	}
-
 	private openNestedEditor(columnIndex: number): void {
 		const column = this.data.columns[columnIndex];
 		if (!column) {
@@ -145,14 +154,14 @@ export default class Layout implements BlockTool {
 		const overlay = document.createElement('div');
 		overlay.classList.add('editor-popup-overlay');
 		overlay.innerHTML = `
-      <div class="editor-popup">
-        <div class="popup-editor-holder"></div>
-        <div class="popup-actions">
-          <button type="button" class="popup-cancel">Cancel</button>
-          <button type="button" class="popup-save">Save</button>
-        </div>
-      </div>
-    `;
+			<div class="editor-popup">
+				<div class="popup-editor-holder"></div>
+				<div class="popup-actions">
+				<button type="button" class="popup-cancel">Cancel</button>
+				<button type="button" class="popup-save">Save</button>
+				</div>
+			</div>
+			`;
 		document.body.appendChild(overlay);
 
 		const holder = overlay.querySelector<HTMLDivElement>('.popup-editor-holder')!;

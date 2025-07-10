@@ -1,11 +1,11 @@
 export const DATA = {
-	time: 1751275870491,
+	time: 1752137407970,
 	blocks: [
 		{
-			id: 'wE3d2W2aaL',
+			id: 'title1',
 			type: 'header',
 			data: {
-				text: 'CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM',
+				text: 'RXSIGHT, INC. ',
 				level: 2,
 			},
 			tunes: {
@@ -15,11 +15,10 @@ export const DATA = {
 			},
 		},
 		{
-			id: 'eChMm4nCOE',
-			type: 'header',
+			id: '4HCEGyWrl_',
+			type: 'paragraph',
 			data: {
-				text: 'Độc lập – Tự do – Hạnh phúc',
-				level: 4,
+				text: '<b>NON-DISCLOSURE AGREEMENT</b>',
 			},
 			tunes: {
 				alignText: {
@@ -28,241 +27,112 @@ export const DATA = {
 			},
 		},
 		{
-			id: 'uzXs_QRlUH',
+			id: 'para1',
+			type: 'paragraph',
+			data: {
+				text:
+					'THIS AGREEMENT is entered into as of________________________________________',
+			},
+			tunes: {
+				alignText: {
+					alignment: 'left',
+				},
+			},
+		},
+		{
+			id: 'BeFx1d7cDh',
+			type: 'paragraph',
+			data: {
+				text:
+					'(the “<b>Effective Date</b>”) by and between RxSight, Inc., a Delaware corporation ("RxSight"), having a place of&nbsp;business at 100 Columbia, Aliso Viejo, CA 92656, and',
+			},
+			tunes: {
+				alignText: {
+					alignment: 'left',
+				},
+			},
+		},
+		{
+			id: '-Lw_A-FtTY',
+			type: 'paragraph',
+			data: {
+				text: '____________________________(the "Recipient"),',
+			},
+			tunes: {
+				alignText: {
+					alignment: 'left',
+				},
+			},
+		},
+		{
+			id: '6fFx7TjoVi',
+			type: 'paragraph',
+			data: {
+				text: 'business at 100 Columbia, Aliso Viejo, CA 92656, and',
+			},
+			tunes: {
+				alignText: {
+					alignment: 'left',
+				},
+			},
+		},
+		{
+			id: 'recital1',
+			type: 'paragraph',
+			data: {
+				text:
+					'<b>WHEREAS</b>, RxSight has certain proprietary information relating to adjustable lens technology;',
+			},
+			tunes: {
+				alignText: {
+					alignment: 'left',
+				},
+			},
+		},
+		{
+			id: 'recital2',
+			type: 'paragraph',
+			data: {
+				text:
+					'<b>WHEREAS</b>, Recipient desires to receive information relating to such technology in order to evaluate or pursue a business relationship with RxSight;',
+			},
+			tunes: {
+				alignText: {
+					alignment: 'left',
+				},
+			},
+		},
+		{
+			id: 'recital3',
+			type: 'paragraph',
+			data: {
+				text:
+					'<b>WHEREAS</b>, Recipient appreciates that RxSight has expended money and effort to establish a proprietary position with respect to the developments it has made and that RxSight considers these developments and information pertaining thereto to be its confidential property;',
+			},
+			tunes: {
+				alignText: {
+					alignment: 'left',
+				},
+			},
+		},
+		{
+			id: 'recital4',
+			type: 'paragraph',
+			data: {
+				text:
+					'<b>WHEREAS</b>, RxSight is willing to demonstrate these developments and to reveal to Recipient certain technical and business information relating to these developments on a confidential basis;',
+			},
+			tunes: {
+				alignText: {
+					alignment: 'left',
+				},
+			},
+		},
+		{
+			id: 'article1_header',
 			type: 'header',
 			data: {
-				text: 'HỢP ĐỒNG CUNG CẤP DỊCH VỤ ĐIỆN TỬ',
-				level: 3,
-			},
-			tunes: {
-				alignText: {
-					alignment: 'center',
-				},
-			},
-		},
-		{
-			id: '2CDfQy5jgs',
-			type: 'paragraph',
-			data: {
-				text: 'Số: [Số hợp đồng/2025/HĐDV]',
-			},
-			tunes: {
-				alignText: {
-					alignment: 'left',
-				},
-			},
-		},
-		{
-			id: 'block1',
-			type: 'paragraph',
-			data: {
-				text: 'Hôm nay, ngày [ngày/tháng/năm], các bên gồm:',
-			},
-			tunes: {
-				alignText: {
-					alignment: 'left',
-				},
-			},
-		},
-		{
-			id: 'block2',
-			type: 'header',
-			data: {
-				text: 'BÊN A (Bên thuê dịch vụ)',
-				level: 5,
-			},
-			tunes: {
-				alignText: {
-					alignment: 'left',
-				},
-			},
-		},
-		{
-			id: 'block2_1',
-			type: 'paragraph',
-			data: {
-				text: 'Tên doanh nghiệp/cá nhân: …',
-			},
-			tunes: {
-				alignText: {
-					alignment: 'left',
-				},
-			},
-		},
-		{
-			id: 'block2_2',
-			type: 'paragraph',
-			data: {
-				text: 'Mã số thuế (nếu có): …',
-			},
-			tunes: {
-				alignText: {
-					alignment: 'left',
-				},
-			},
-		},
-		{
-			id: 'block2_3',
-			type: 'paragraph',
-			data: {
-				text: 'Địa chỉ: …',
-			},
-			tunes: {
-				alignText: {
-					alignment: 'left',
-				},
-			},
-		},
-		{
-			id: 'block2_4',
-			type: 'paragraph',
-			data: {
-				text: 'Số điện thoại: …',
-			},
-			tunes: {
-				alignText: {
-					alignment: 'left',
-				},
-			},
-		},
-		{
-			id: 'block2_5',
-			type: 'paragraph',
-			data: {
-				text: 'Email: …',
-			},
-			tunes: {
-				alignText: {
-					alignment: 'left',
-				},
-			},
-		},
-		{
-			id: 'block2_6',
-			type: 'paragraph',
-			data: {
-				text: 'Đại diện: …',
-			},
-			tunes: {
-				alignText: {
-					alignment: 'left',
-				},
-			},
-		},
-		{
-			id: 'block2_7',
-			type: 'paragraph',
-			data: {
-				text: 'Chức vụ: …',
-			},
-			tunes: {
-				alignText: {
-					alignment: 'left',
-				},
-			},
-		},
-		{
-			id: 'block3',
-			type: 'header',
-			data: {
-				text: 'BÊN B (Bên cung cấp dịch vụ)',
-				level: 5,
-			},
-			tunes: {
-				alignText: {
-					alignment: 'left',
-				},
-			},
-		},
-		{
-			id: 'block3_1',
-			type: 'paragraph',
-			data: {
-				text: 'Tên doanh nghiệp/cá nhân: …',
-			},
-			tunes: {
-				alignText: {
-					alignment: 'left',
-				},
-			},
-		},
-		{
-			id: 'block3_2',
-			type: 'paragraph',
-			data: {
-				text: 'Mã số thuế (nếu có): …',
-			},
-			tunes: {
-				alignText: {
-					alignment: 'left',
-				},
-			},
-		},
-		{
-			id: 'block3_3',
-			type: 'paragraph',
-			data: {
-				text: 'Địa chỉ: …',
-			},
-			tunes: {
-				alignText: {
-					alignment: 'left',
-				},
-			},
-		},
-		{
-			id: 'block3_4',
-			type: 'paragraph',
-			data: {
-				text: 'Số điện thoại: …',
-			},
-			tunes: {
-				alignText: {
-					alignment: 'left',
-				},
-			},
-		},
-		{
-			id: 'block3_5',
-			type: 'paragraph',
-			data: {
-				text: 'Email: …',
-			},
-			tunes: {
-				alignText: {
-					alignment: 'left',
-				},
-			},
-		},
-		{
-			id: 'block3_6',
-			type: 'paragraph',
-			data: {
-				text: 'Đại diện: …',
-			},
-			tunes: {
-				alignText: {
-					alignment: 'left',
-				},
-			},
-		},
-		{
-			id: 'block3_7',
-			type: 'paragraph',
-			data: {
-				text: 'Chức vụ: …',
-			},
-			tunes: {
-				alignText: {
-					alignment: 'left',
-				},
-			},
-		},
-		{
-			id: 'block4',
-			type: 'header',
-			data: {
-				text: 'ĐIỀU 1: NỘI DUNG HỢP ĐỒNG',
+				text: '1. CONFIDENTIAL INFORMATION',
 				level: 4,
 			},
 			tunes: {
@@ -272,11 +142,11 @@ export const DATA = {
 			},
 		},
 		{
-			id: 'block5',
+			id: 'e9zLSP-C26',
 			type: 'paragraph',
 			data: {
 				text:
-					'Bên B cam kết cung cấp dịch vụ: [mô tả cụ thể công việc]. Sản phẩm được bàn giao qua phương thức điện tử.',
+					'"Confidential Information" shall mean any and all technical and non-technical information, including&nbsp;but not limited to (a) patent and patent applications and disclosures, (b) trade secret, (c) proprietary information --mask works, ideas, samples, structures, models, compositions, work instruction, specification, chemical compounds, assays, biological materials, media, techniques, sketches, drawings, works of authorship, models, inventions,&nbsp;know­how, processes, procedures, formulations, apparatuses, equipment, algorithms, sof&nbsp;tware programs, software&nbsp;source documents, and formulae related to the current, future, and proposed products and services of each of the&nbsp;parties, and including, without limitation, their respective information concerning research, experimental work',
 			},
 			tunes: {
 				alignText: {
@@ -285,10 +155,10 @@ export const DATA = {
 			},
 		},
 		{
-			id: 'block6',
+			id: 'article2_header',
 			type: 'header',
 			data: {
-				text: 'ĐIỀU 2: THỜI GIAN THỰC HIỆN',
+				text: '2. NON-DISCLOSURE AND NON-USE',
 				level: 4,
 			},
 			tunes: {
@@ -298,11 +168,11 @@ export const DATA = {
 			},
 		},
 		{
-			id: 'block7',
+			id: 'article2_para',
 			type: 'paragraph',
 			data: {
 				text:
-					'Từ ngày [ ] đến ngày [ ]. Có thể gia hạn theo thỏa thuận bằng email giữa hai bên.',
+					'Recipient agrees that, at all times (notwithstanding termination or expiration), it will hold in strict confidence and not disclose any Confidential Information, and not use any Confidential Information except to evaluate a business relationship with RxSight; provided',
 			},
 			tunes: {
 				alignText: {
@@ -311,10 +181,23 @@ export const DATA = {
 			},
 		},
 		{
-			id: 'block8',
+			id: 'KCXWEsA-1t',
+			type: 'paragraph',
+			data: {
+				text:
+					'Recipient hereby agrees that, at all times (notwithstanding the termination or expiration of this agreement), he or she will hold in strict confidence and not disclose to any third party any of the Confidential information (other than pursuant to paragraph 3 below), and not use any of the Confidential Information, except for the purposes of evaluation noted above; provided, however, Recipient shall have no liability to RxSight with respect to use or disclosure to third parties of such information provided Recipient can establish by written documentation',
+			},
+			tunes: {
+				alignText: {
+					alignment: 'left',
+				},
+			},
+		},
+		{
+			id: 'article4_header',
 			type: 'header',
 			data: {
-				text: 'ĐIỀU 3: GIÁ TRỊ HỢP ĐỒNG VÀ THANH TOÁN',
+				text: '3. RETURN OF MATERIALS',
 				level: 4,
 			},
 			tunes: {
@@ -324,11 +207,11 @@ export const DATA = {
 			},
 		},
 		{
-			id: 'block9',
+			id: 'article4_para',
 			type: 'paragraph',
 			data: {
 				text:
-					'Tổng giá trị hợp đồng: [Số tiền] VNĐ. Thanh toán qua chuyển khoản theo thông tin do Bên B cung cấp.',
+					'After sixty (60) days from the Effective Date or actual disclosure, whichever is later, Recipient shall promptly return all tangible items and copies thereof relating to Confidential Information upon RxSight’s request.',
 			},
 			tunes: {
 				alignText: {
@@ -337,10 +220,10 @@ export const DATA = {
 			},
 		},
 		{
-			id: 'block10',
+			id: 'article5_header',
 			type: 'header',
 			data: {
-				text: 'ĐIỀU 4: TRÁCH NHIỆM VÀ NGHĨA VỤ CÁC BÊN',
+				text: '4. NO LICENSE GRANTED',
 				level: 4,
 			},
 			tunes: {
@@ -350,11 +233,11 @@ export const DATA = {
 			},
 		},
 		{
-			id: 'block11',
+			id: 'article5_para',
 			type: 'paragraph',
 			data: {
 				text:
-					'Bên A có nghĩa vụ cung cấp đầy đủ thông tin, thanh toán đúng hạn. Bên B cam kết thực hiện đúng chất lượng, tiến độ và bảo mật thông tin.',
+					'Nothing in this Agreement grants any rights to any Confidential Information or intellectual property by license or otherwise. Recipient shall not make, use, or sell any product derived from Confidential Information.',
 			},
 			tunes: {
 				alignText: {
@@ -363,134 +246,52 @@ export const DATA = {
 			},
 		},
 		{
-			id: 'block12',
-			type: 'header',
-			data: {
-				text: 'ĐIỀU 5: BẢO MẬT VÀ SỞ HỮU TRÍ TUỆ',
-				level: 4,
-			},
-			tunes: {
-				alignText: {
-					alignment: 'left',
-				},
-			},
-		},
-		{
-			id: 'block13',
-			type: 'paragraph',
-			data: {
-				text:
-					'Mọi tài liệu, sản phẩm trong quá trình thực hiện hợp đồng là tài sản của Bên A sau khi thanh toán đầy đủ.',
-			},
-			tunes: {
-				alignText: {
-					alignment: 'left',
-				},
-			},
-		},
-		{
-			id: 'block14',
-			type: 'header',
-			data: {
-				text: 'ĐIỀU 6: GIẢI QUYẾT TRANH CHẤP',
-				level: 4,
-			},
-			tunes: {
-				alignText: {
-					alignment: 'left',
-				},
-			},
-		},
-		{
-			id: 'block15',
-			type: 'paragraph',
-			data: {
-				text:
-					'Hai bên ưu tiên thương lượng. Nếu không thành, tranh chấp sẽ được giải quyết tại Tòa án có thẩm quyền.',
-			},
-			tunes: {
-				alignText: {
-					alignment: 'left',
-				},
-			},
-		},
-		{
-			id: 'block16',
-			type: 'header',
-			data: {
-				text: 'ĐIỀU 7: HIỆU LỰC HỢP ĐỒNG',
-				level: 4,
-			},
-			tunes: {
-				alignText: {
-					alignment: 'left',
-				},
-			},
-		},
-		{
-			id: 'block17',
-			type: 'paragraph',
-			data: {
-				text:
-					'Hợp đồng có hiệu lực từ ngày ký, được lập và lưu hành qua phương tiện điện tử. Chữ ký điện tử hoặc xác nhận qua email có giá trị pháp lý.',
-			},
-			tunes: {
-				alignText: {
-					alignment: 'left',
-				},
-			},
-		},
-		{
-			id: 'FlLfp66GYM',
+			id: 'layout1',
 			type: 'layout',
 			data: {
-				time: 1751275870480,
+				time: 1752137407968,
 				columns: [
 					{
 						blocks: [
 							{
-								id: 'dhKbg0PHTv',
+								id: 'sigA_header',
 								type: 'header',
 								data: {
-									text: 'ĐẠI DIỆN BÊN A',
+									text: 'RXSIGHT, INC.',
 									level: 5,
 								},
 							},
 							{
-								id: 'DeMffJQo0f',
-								type: 'paragraph',
-								data: {
-									text: '(Ký điện tử, chữ ký số hoặc xác nhận qua email)',
-								},
-							},
-							{
-								id: 'VSEdNnjlDx',
+								id: '28E4VDL7hP',
 								type: 'signature',
-								data: {},
+								data: {
+									caption: '',
+									withBorder: false,
+									stretched: false,
+									withBackground: false,
+								},
 							},
 						],
 					},
 					{
 						blocks: [
 							{
-								id: 'ql5PDOjHZv',
+								id: 'sigB_header',
 								type: 'header',
 								data: {
-									text: 'ĐẠI DIỆN BÊN B',
+									text: 'RECIPIENT',
 									level: 5,
 								},
 							},
 							{
-								id: 'lTM8S57GAG',
-								type: 'paragraph',
-								data: {
-									text: '(Ký điện tử, chữ ký số hoặc xác nhận qua email)',
-								},
-							},
-							{
-								id: '8YCEvdwd63',
+								id: 'Xkcmkb7g_A',
 								type: 'signature',
-								data: {},
+								data: {
+									caption: '',
+									withBorder: false,
+									stretched: false,
+									withBackground: false,
+								},
 							},
 						],
 					},
