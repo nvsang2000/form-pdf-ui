@@ -82,7 +82,7 @@ const PdfSignerLastPageDynamic: React.FC<PdfSignerLastPageDynamicProps> = ({
 
 			const pngImage = await pdfDoc.embedPng(sigDataUrl);
 			const { width: pdfWidth, height: pdfHeight } = lastPage.getSize();
-			const sigW = 150;
+			const sigW = 200;
 			const sigH = (pngImage.height / pngImage.width) * sigW;
 
 			let placed = false;
@@ -108,22 +108,13 @@ const PdfSignerLastPageDynamic: React.FC<PdfSignerLastPageDynamicProps> = ({
 
 						lastPage.drawImage(pngImage, {
 							x: xPdf,
-							y: yPdf,
+							y: yPdf - 20,
 							width: sigW,
 							height: sigH,
 						});
 						placed = true;
 					}
 				}
-			}
-
-			if (!placed) {
-				lastPage.drawImage(pngImage, {
-					x: pdfWidth * 0.25 - sigW / 2,
-					y: 200,
-					width: sigW,
-					height: sigH,
-				});
 			}
 
 			const newBytes = await pdfDoc.save();
@@ -153,10 +144,7 @@ const PdfSignerLastPageDynamic: React.FC<PdfSignerLastPageDynamicProps> = ({
 	};
 
 	return (
-		<div
-			ref={containerRef}
-			style={{ position: 'relative', width: '100%', height: '100vh' }}
-		>
+		<div ref={containerRef} style={{ position: 'relative', height: '100vh' }}>
 			<Worker
 				workerUrl={
 					workerUrl || 'https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js'
@@ -215,11 +203,7 @@ const PdfSignerLastPageDynamic: React.FC<PdfSignerLastPageDynamicProps> = ({
 						>
 							<SignatureCanvas
 								ref={sigCanvasRef}
-								canvasProps={{
-									width: 600,
-									height: 400,
-									style: { border: '1px solid #ccc' },
-								}}
+								canvasProps={{ width: 600, height: 400 }}
 							/>
 							<div className="signature-modal-footer">
 								<button

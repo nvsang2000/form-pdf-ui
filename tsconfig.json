@@ -4,7 +4,7 @@
 		"baseUrl": "./",
 		"paths": {
 			"@/*": ["./src/*"]
-		}
+		},
 	},
 	"include": ["**/*.ts", "**/*.tsx", "../../node_modules/@repo/types/*.d.ts"]
 }

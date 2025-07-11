@@ -2,13 +2,13 @@ import React, { useRef, useState } from 'react';
 import {
 	FormEditor,
 	InlineToolBarDefault,
-	ReadOnlyEditor,
 	type EditorHandle,
 } from '@/components/editor';
 import { Button } from '@repo/ui/button';
 import axios from 'axios';
 import { DATA } from '@/constant';
 import PdfSignerLastPageDynamic from '@/components/pdf-viewer';
+import { API_URL } from '@/config';
 
 export default function EditorPage() {
 	const editorRef = useRef<EditorHandle>(null);
@@ -25,11 +25,10 @@ export default function EditorPage() {
 				content: JSON.stringify(data),
 			};
 
-			const res = await axios.post(
-				'http://localhost:35000/editor/convert/jsontopdf',
-				payload,
-				{ headers: { 'Content-Type': 'application/json' } },
-			);
+			const url = `${API_URL}/editor/convert/jsontopdf`;
+			const res = await axios.post(url, payload, {
+				headers: { 'Content-Type': 'application/json' },
+			});
 			const rawField = (res.data as any).pdfBase64 ?? (res.data as any).data;
 			if (!rawField || typeof rawField !== 'string') {
 				console.error('Response does not contain Base64 PDF string:', res.data);

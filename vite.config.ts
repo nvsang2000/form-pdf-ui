@@ -14,6 +14,7 @@ export default function ({ mode }) {
 			alias: {
 				'@': path.resolve(__dirname, './src'),
 			},
+			external: ['@editorjs/editorjs/types/tools/inline-tool'],
 		},
 		server: {
 			port: process.env.VITE_PORT! || 3000,
