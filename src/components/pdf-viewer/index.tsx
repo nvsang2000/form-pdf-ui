@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useRef, useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Worker, Viewer, SpecialZoomLevel } from '@react-pdf-viewer/core';
@@ -5,6 +6,8 @@ import SignatureCanvas from 'react-signature-canvas';
 import { PDFDocument } from 'pdf-lib';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import './index.css';
+
+import { pageNavigationPlugin } from '@react-pdf-viewer/page-navigation';
 
 interface PdfSignerLastPageDynamicProps {
 	pdfUrl: string;
@@ -17,9 +20,6 @@ const PdfSignerLastPageDynamic: React.FC<PdfSignerLastPageDynamicProps> = ({
 	pdfUrl,
 	workerUrl,
 }) => {
-	const containerRef = useRef<HTMLDivElement | null>(null);
-	const sigCanvasRef = useRef<SignatureCanvasRef>(null);
-
 	const decodeBase64 = (dataUri: string): Uint8Array => {
 		const base64 = dataUri.split(',')[1] || dataUri;
 		const binary = atob(base64);
@@ -31,20 +31,25 @@ const PdfSignerLastPageDynamic: React.FC<PdfSignerLastPageDynamicProps> = ({
 		return bytes;
 	};
 
-	const [fileData, setFileData] = useState<Uint8Array>(() =>
+	const DEFAULT_SIG_ID = '[sig_sj2l2jnf]';
+	const containerRef = useRef<HTMLDivElement | null>(null);
+	const sigCanvasRef = useRef<SignatureCanvasRef>(null);
+	const [isSigned, setIsSigned] = useState(false);
+
+	const [originalPdfBytes, setOriginalPdfBytes] = useState<Uint8Array>(() =>
 		decodeBase64(pdfUrl),
 	);
-	const [pdfSrc, setPdfSrc] = useState<string>(() => {
-		const bytes = decodeBase64(pdfUrl) as any;
-		return URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
-	});
+	const [fileData, setFileData] = useState<Uint8Array>(originalPdfBytes);
+
+	const [pdfSrc, setPdfSrc] = useState<string>(() =>
+		URL.createObjectURL(
+			new Blob([originalPdfBytes as any], { type: 'application/pdf' }),
+		),
+	);
 
 	useEffect(() => {
-		return () => URL.revokeObjectURL(pdfSrc);
-	}, [pdfSrc]);
-
-	useEffect(() => {
 		const bytes = decodeBase64(pdfUrl) as any;
+		setOriginalPdfBytes(bytes);
 		setFileData(bytes);
 		setPdfSrc((prev) => {
 			URL.revokeObjectURL(prev);
@@ -52,8 +57,15 @@ const PdfSignerLastPageDynamic: React.FC<PdfSignerLastPageDynamicProps> = ({
 		});
 	}, [pdfUrl]);
 
+	useEffect(() => {
+		return () => URL.revokeObjectURL(pdfSrc);
+	}, [pdfSrc]);
+
 	const [modalOpen, setModalOpen] = useState<boolean>(false);
-	const handleSignClick = () => setModalOpen(true);
+	const handleSignClick = () => {
+		setIsSigned(true);
+		setModalOpen(true);
+	};
 	const handleClear = () => sigCanvasRef.current?.clear();
 
 	const handleSave = async () => {
@@ -64,53 +76,51 @@ const PdfSignerLastPageDynamic: React.FC<PdfSignerLastPageDynamicProps> = ({
 		const sigDataUrl = sigCanvasRef.current.toDataURL('image/png');
 
 		try {
-			const pdfDoc = await PDFDocument.load(fileData);
+			const pdfDoc = await PDFDocument.load(originalPdfBytes);
 			const pages = pdfDoc.getPages();
 			const lastPage = pages[pages.length - 1] as any;
+
 			const pngImage = await pdfDoc.embedPng(sigDataUrl);
 			const { width: pdfWidth, height: pdfHeight } = lastPage.getSize();
+			const sigW = 150;
+			const sigH = (pngImage.height / pngImage.width) * sigW;
 
 			let placed = false;
 			const container = containerRef.current;
 			if (container) {
-				const pageEls = container.querySelectorAll('.rpv-core__page');
+				const pageEls = container.querySelectorAll('.rpv-core__page-layer');
 				if (pageEls.length) {
 					const lastEl = pageEls[pageEls.length - 1] as HTMLElement;
-					const textLayer = lastEl.querySelector(
-						'.rpv-core__text-layer',
-					) as HTMLElement;
-					if (textLayer) {
-						let maxBottom = -Infinity;
-						let targetSpan: HTMLElement | null = null;
-						textLayer.querySelectorAll('span').forEach((span) => {
-							const rect = (span as HTMLElement).getBoundingClientRect();
-							if (rect.bottom > maxBottom) {
-								maxBottom = rect.bottom;
-								targetSpan = span as HTMLElement;
-							}
+					const allSpans = lastEl.querySelectorAll('span');
+					const markerSpan = Array.from(allSpans).find(
+						(s) => s.textContent === DEFAULT_SIG_ID,
+					);
+
+					if (markerSpan) {
+						const spanRect = markerSpan.getBoundingClientRect();
+						const pageRect = lastEl.getBoundingClientRect();
+
+						const cssX = spanRect.left - pageRect.left;
+						const cssYFromTop = spanRect.top - pageRect.top;
+						const xPdf = cssX * (pdfWidth / pageRect.width);
+						const yPdf =
+							(pageRect.height - cssYFromTop) * (pdfHeight / pageRect.height);
+
+						lastPage.drawImage(pngImage, {
+							x: xPdf,
+							y: yPdf,
+							width: sigW,
+							height: sigH,
 						});
-						if (targetSpan) {
-							const spanRect = targetSpan.getBoundingClientRect();
-							const pageRect = lastEl.getBoundingClientRect();
-							const cssX = spanRect.right - pageRect.left + 10;
-							const cssYFromTop = spanRect.bottom - pageRect.top + 5;
-							const x = cssX * (pdfWidth / pageRect.width);
-							const y =
-								(pageRect.height - cssYFromTop) * (pdfHeight / pageRect.height);
-							const sigW = 400;
-							const sigH = (pngImage.height / pngImage.width) * sigW;
-							lastPage.drawImage(pngImage, { x, y, width: sigW, height: sigH });
-							placed = true;
-						}
+						placed = true;
 					}
 				}
 			}
+
 			if (!placed) {
-				const sigW = 150;
-				const sigH = (pngImage.height / pngImage.width) * sigW;
 				lastPage.drawImage(pngImage, {
-					x: pdfWidth - sigW - 40,
-					y: 40,
+					x: pdfWidth * 0.25 - sigW / 2,
+					y: 200,
 					width: sigW,
 					height: sigH,
 				});
@@ -125,10 +135,20 @@ const PdfSignerLastPageDynamic: React.FC<PdfSignerLastPageDynamicProps> = ({
 					new Blob([newUint8], { type: 'application/pdf' }),
 				);
 			});
+
 			setModalOpen(false);
 		} catch (err) {
 			console.error('Error saving signature:', err);
 			alert('An error occurred while saving the signature. Please try again.');
+		}
+	};
+
+	const pageNavigationPluginInstance = pageNavigationPlugin();
+	const { jumpToPage } = pageNavigationPluginInstance;
+	const handleDocumentLoad = (e: any) => {
+		if (isSigned) {
+			const lastIndex = e.doc.numPages - 1;
+			jumpToPage(lastIndex);
 		}
 	};
 
@@ -142,27 +162,32 @@ const PdfSignerLastPageDynamic: React.FC<PdfSignerLastPageDynamicProps> = ({
 					workerUrl || 'https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js'
 				}
 			>
-				<Viewer fileUrl={pdfSrc} defaultScale={SpecialZoomLevel.PageFit} />
+				<Viewer
+					fileUrl={pdfSrc}
+					defaultScale={SpecialZoomLevel.PageFit}
+					plugins={[pageNavigationPluginInstance]}
+					onDocumentLoad={handleDocumentLoad}
+				/>
 			</Worker>
 
-			<button
-				onClick={handleSignClick}
-				style={{
-					position: 'absolute',
-					bottom: 60,
-					left: '50%',
-					transform: 'translateX(-50%)',
-					zIndex: 10,
-					padding: '8px 16px',
-					borderRadius: 4,
-					border: 'none',
-					background: '#007bff',
-					color: '#fff',
-					cursor: 'pointer',
-				}}
-			>
-				Signature
-			</button>
+			<div className="absolute bottom-[60px] left-0 z-10 flex w-full justify-center space-x-4 py-2">
+				<button
+					onClick={handleSignClick}
+					className="rounded bg-blue-600 px-6 py-2 text-white hover:bg-blue-700"
+				>
+					Signature
+				</button>
+
+				{!modalOpen && (
+					<a
+						href={pdfSrc}
+						download="signed-document.pdf"
+						className="rounded bg-green-600 px-6 py-2 text-white hover:bg-green-700"
+					>
+						Download
+					</a>
+				)}
+			</div>
 
 			{modalOpen &&
 				createPortal(

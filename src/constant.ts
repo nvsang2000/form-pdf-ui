@@ -1,5 +1,5 @@
 export const DATA = {
-	time: 1752137407970,
+	time: 1752204177609,
 	blocks: [
 		{
 			id: 'title1',
@@ -249,7 +249,7 @@ export const DATA = {
 			id: 'layout1',
 			type: 'layout',
 			data: {
-				time: 1752137407968,
+				time: 1752204177607,
 				columns: [
 					{
 						blocks: [
@@ -281,16 +281,6 @@ export const DATA = {
 								data: {
 									text: 'RECIPIENT',
 									level: 5,
-								},
-							},
-							{
-								id: 'Xkcmkb7g_A',
-								type: 'signature',
-								data: {
-									caption: '',
-									withBorder: false,
-									stretched: false,
-									withBackground: false,
 								},
 							},
 						],
