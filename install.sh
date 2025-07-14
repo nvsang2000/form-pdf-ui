@@ -2,10 +2,8 @@
 
 set -e
 
-yarn install
+bun install
 
-yarn build
+bun run build
 
-yarn postinstall
-
-node dist/src/main
+bun run preview

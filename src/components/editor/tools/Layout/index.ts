@@ -120,13 +120,14 @@ export default class Layout implements BlockTool {
 							display: none !important;
 							}
 						`;
-						// Có thể append vào head hoặc chính trong holder
 						document.head.appendChild(style);
 					},
 
 					onChange: debounce(async () => {
 						const output = await previewEditor.save();
-						this.data.columns[idx].blocks = output.blocks;
+						if (this.data.columns[idx]) {
+							this.data.columns[idx].blocks = output.blocks;
+						}
 					}, 500),
 				});
 

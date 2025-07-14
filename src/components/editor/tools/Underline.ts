@@ -3,12 +3,12 @@
  */
 import '../style/index.css';
 import { IconUnderline } from '@codexteam/icons';
-import {
-	type API,
-	type InlineTool,
-	type SanitizerConfig,
+import type {
+	API,
+	InlineTool,
+	SanitizerConfig,
+	InlineToolConstructorOptions,
 } from '@editorjs/editorjs';
-import { type InlineToolConstructorOptions } from '@editorjs/editorjs/types/tools/inline-tool';
 
 /**
  * Underline Tool for the Editor.js

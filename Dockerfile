@@ -1,5 +1,4 @@
-# Dockerfile
-FROM node:20
+FROM oven/bun:alpine AS builder
 
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
@@ -13,7 +12,7 @@ RUN chmod +x install.sh
 COPY . .
 
 # define port
-EXPOSE 5000/tcp
+EXPOSE 4173/tcp
 
 # Set the entrypoint to run the install.sh script
 ENTRYPOINT ["sh", "/install.sh"]

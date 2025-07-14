@@ -8,6 +8,8 @@
 		"dev": "vite --mode development",
 		"vite-build": "NODE_ENV=production vite build --mode production --outDir ./build/public",
 		"build": "bun run vite-build && NODE_ENV=production bun build src/server.ts --drop debugger --minify --target bun --outdir ./build",
+		"preview": "vite preview --mode production --outDir ./build/public --host 0.0.0.0 --port 4173",
+		"start": "bun run build && bun run preview",
 		"compile": "NODE_ENV=production bun build src/server.ts --compile --drop debugger --minify --target bun --outfile ./dist/server.bun && bun run ../../tools/build-fe.ts",
 		"storybook": "storybook dev -p 6006",
 		"build-storybook": "storybook build",
