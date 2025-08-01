@@ -1,0 +1,20 @@
+node_modules
+dist
+build
+*.log
+.git
+bun.lock*
+apps/editor-servicenvsang2000
+form-pdf-ui
+
+Type / to search
+
+Code
+Issues
+Pull requests
+Actions
+Projects
+Wiki
+Security
+Insights
+Settings
