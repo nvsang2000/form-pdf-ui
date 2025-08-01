@@ -1,60 +1,85 @@
-# System Dashboard
+# form-pdf-ui
 
-Dashboard quản lý hệ thống.
+Form PDF UI is a modern frontend application built with React, Vite, and TailwindCSS, designed for creating, editing, and previewing PDF forms. It integrates rich text editing via Editor.js plugins and PDF manipulation tools to provide a seamless document workflow.
 
-## Cài đặt
+## Purpose
+
+- Provide a user interface for generating and editing PDF-based forms.
+- Demonstrate how to structure a React + Vite project with Bun as the runtime.
+- Showcase integration of Editor.js with PDF handling in a frontend environment.
+
+## Technologies Used
+
+- **React 19**: UI library for building components.
+- **Vite 6**: Fast development and build tool.
+- **TailwindCSS 4**: Utility-first CSS framework.
+- **Bun**: JavaScript/TypeScript runtime for dev/build scripts.
+- **TypeScript**: Type-safe JavaScript.
+- **Editor.js**: Rich text and block-style editor.
+- **PDF Tools**: react-pdf-viewer, pdf-lib, signature_pad.
+
+## Directory Structure
+
+```
+form-pdf-ui/
+├── public/                 # Static assets and public files
+│   ├── assets/             # Images, fonts, etc.
+│   ├── locales/            # Localization files
+├── src/                    # Main source code
+│   ├── @types/             # TypeScript type definitions
+│   ├── components/         # React components
+│   ├── lib/                # Utilities and shared logic
+│   ├── pages/              # Application pages
+│   └── styles/             # Global and TailwindCSS styles
+├── package.json            # Project dependencies and scripts
+├── tsconfig.json           # TypeScript configuration
+├── bunfig.toml             # Bun configuration (if using Bun paths)
+```
+
+## Environment Configuration
+
+Environment variables used by Vite are defined in `.env`:
+
+```sh
+# Port for the development server
+VITE_PORT=35500
+
+# Application version injected into the build
+VITE_APP_VERSION=
+```
+
+## How to Run the Project
+
+### Install Dependencies
 
 ```bash
-# Cài đặt
 bun install
 ```
 
-## Phát triển
+### Development
 
 ```bash
-# Chạy môi trường development
 bun run dev
-
-# Chạy Storybook
-bun run storybook
 ```
 
-## Build
+### Build for Production
 
 ```bash
-# Build cho production
 bun run build
-
-# Build và compile thành binary
-bun run compile
 ```
 
-## Cấu trúc thư mục
+### Preview Production Build
 
-```
-public/				 # www root
-  ├── assets/    	 # Hình ảnh, dữ liệu, ...
-  ├── locales/       # Các tập tin ngôn ngữ
-src/
-  ├── @types/   	 # TypeScript type definitions
-  ├── components/    # React components
-  ├── lib/           # Utilities và shared logic
-  ├── pages/         # Các trang
-  └── styles/        # Css
+```bash
+bun run preview
 ```
 
-## Biến Môi trường
+## Access
 
-```env
-VITE_PORT=3000              # Port cho development server
-VITE_APP_VERSION=           # Version của ứng dụng
+```bash
+# Development server
+http://localhost:35500
+
+# Production preview (default)
+http://localhost:35500
 ```
-
-## Scripts
-
-- `dev`: Chạy development server với Vite
-- `build`: Build ứng dụng cho production
-- `compile`: Build và compile thành binary
-- `storybook`: Chạy Storybook development server
-- `build-storybook`: Build Storybook static files
-- `clean`: Xóa thư mục build
